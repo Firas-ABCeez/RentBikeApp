@@ -1,7 +1,10 @@
+// PAGES
+import { HomePage } from './pages'
+
 export default function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <h1>Hello world!</h1>
-    </div>
+    <>
+      <HomePage />
+    </>
   )
 }
