@@ -1,10 +1,12 @@
 // UI COMPONENTS
 import NavbarContainer from "../navbar/NavbarContainer";
+import Map from './Map';
 
 export default function HomeContainer() {
   return (
-    <div className="bg-gray-400 h-screen">
+    <div className="h-screen w-screen">
       <NavbarContainer />
+      <Map />
     </div>
   )
 }
