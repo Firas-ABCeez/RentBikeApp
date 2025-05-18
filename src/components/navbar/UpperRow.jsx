@@ -136,7 +136,7 @@ export default function UpperRow() {
                                 bg-[#019b94]
                                 hover:bg-[#0fb9b1]
                                 border-[1px]
-                                border-[#019b94]
+                                border-[#0fb9b1]
                                 hover:text-white
                                 text-white
                                 rounded-full

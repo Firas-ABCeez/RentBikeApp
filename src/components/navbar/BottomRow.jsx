@@ -1,154 +1,115 @@
-// UI COMPONENTS
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
 
+// UI COMPONENTS
+import { Button } from "@/components/ui/button";
 
 // ICONS
-import realTime_white from '@/assets/icons/realTime_white.svg';
-import tf30min_black from '@/assets/icons/tf30min_black.svg';
-import tf60min_black from '@/assets/icons/tf60min_black.svg';
-
-
+import realTimeWhite from '@/assets/icons/realTime_white.svg';
+import realTimeColor from '@/assets/icons/realTime_color.svg';
+import tf30minBlack from '@/assets/icons/tf30min_black.svg';
+import tf30minColor from '@/assets/icons/tf30min_color.svg';
+import tf60minBlack from '@/assets/icons/tf60min_black.svg';
+import tf60minColor from '@/assets/icons/tf60min_color.svg';
 
 export default function BottomRow() {
+
+    // Collection of timeline btns
+    const timelinesBtns = [
+      {
+            name: 'Real Time',
+            inActiveIcon: realTimeColor,
+            activeIcon: realTimeWhite,
+            btnBgColor: 'bg-[#F53B57]',
+            btnBgHoverColor: 'hover:bg-[#ff5e57]',
+            textColor: 'text-white',
+            borderColor: '#F53B57',
+        },
+        {
+            name: 'In 30 Min',
+            inActiveIcon: tf30minBlack,
+            activeIcon: tf30minColor,
+            btnBgColor: 'bg-[#FFA801]',
+            btnBgHoverColor: 'hover:bg-[#ffc048]',
+            textColor: 'text-white',
+            borderColor: '#FFA801',
+        },
+        {
+            name: 'In 60 Min',
+            inActiveIcon: tf60minBlack,
+            activeIcon: tf60minColor,
+            btnBgColor: 'bg-[#05c46b]',
+            btnBgHoverColor: 'hover:bg-[#0be881]',
+            textColor: 'text-white',
+            borderColor: '#05c46b',
+        },
+    ];
+
+    // Dynamically store and update the active btn based on 'activeBtn' state
+    const [activeBtn, setActiveBtn] = useState(0);
+
     return (
         <div className="flex flex-row justify-between px-5">
 
-
             {/* CONTAINER SECTION */}
             <div className="
-                            min-w-[415px] 
-                            flex 
-                            justify-evenly 
-                            items-center 
-                            bg-white
-                            border-[1px]
-                            border-gray-400 
-                            font-semibold 
-                            !text-sm
+                min-w-[415px] 
+                flex 
+                justify-evenly 
+                items-center 
+                bg-white
+                border-[1px]
+                border-gray-400 
+                font-semibold 
+                text-sm
+                rounded-full
+                m-0
+                shadow-sm
+            ">
+                {timelinesBtns.map((btn, i) => (
+                    <Button
+                        key={i}
+                        onClick={() => setActiveBtn(i)}
+                        variant="outline"
+                        className={`
+                            shadow-none
+                            cursor-pointer 
+                            px-5 
+                            py-5
+                            w-[138.333333333px]
+                            text-sm
                             rounded-full
-                            m-0
-                            shadow-sm
-                            ">
-
-                {/* REAL TIME BTN */}
-                <Button
-                    variant="outline"
-                    className="
-                            w-[138.333333333px]
-                            flex
-                            flex-row 
-                            items-center 
-                            justify-between 
-                            cursor-pointer 
-                            !px-5 
-                            py-5 
-                            bg-[#F53B57]
-                            hover:bg-[#ff5e57] 
-                            border-[1px] 
-                            border-[#F53B57]
-                            hover:text-white
-                            text-white 
-                            rounded-full 
-                            font-extrabold 
-                            !text-sm 
-                            float-end
-                            shadow-md
-                            hover:shadow-lg">
-
-                    {/* ICON */}
-                    <span
-                        style={{
-                            backgroundImage: `url(${realTime_white})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'contain',
-                            display: 'inline-block',
-                            width: '24px',
-                            height: '24px',
-                        }}
-                    ></span>
-
-                    {/* BTN TEXT */}
-                    <span className="mt-[1px]">Real time</span>
-                </Button>
-
-                {/* 30 MIN BTN */}
-                <Button
-                    variant="outline"
-                    className="
-                            w-[138.333333333px]
-                            flex
-                            flex-row 
-                            items-center 
-                            justify-between 
-                            cursor-pointer 
-                            !px-5 
-                            py-5 
-                            bg-white
-                            hover:bg-[#ffbf8b]  
-                            hover:border-[#ffbf8b]
-                            border-[1px] 
+                            border-[1px]
                             border-white
-                            text-gray-700 
-                            rounded-full 
-                            font-semibold 
-                            !text-sm 
-                           ">
+                            // BG COLOR 
+                            ${activeBtn === i ? btn.btnBgColor : 'white'}
+                            ${activeBtn === i ? btn.btnBgHoverColor : 'hover:bg-gray-200'}
+                            // TEXT
+                            ${activeBtn === i ? btn.textColor : 'text-gray-700'}
+                            ${activeBtn === i ? `hover:text-white` : 'hover:text-gray-700'}
+                            ${activeBtn === i ? 'font-extrabold' : 'font-semibold'}
+                            // SHADOW
+                            ${activeBtn === i ? 'shadow-lg' : 'shadow-none'}
+                            
+                            
+                        `}
+                    >
+                        {/* ICON */}
+                        <span
+                            style={{
+                                backgroundImage: `url(${activeBtn === i ? btn.activeIcon : btn.inActiveIcon})`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundSize: 'contain',
+                                display: 'inline-block',
+                                width: '25px',
+                                height: '25px',
+                            }}
+                        ></span>
 
-                    {/* ICON */}
-                    <span
-                        style={{
-                            backgroundImage: `url(${tf30min_black})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'contain',
-                            display: 'inline-block',
-                            width: '24px',
-                            height: '24px',
-                        }}
-                    ></span>
-
-                    {/* BTN TEXT */}
-                    <span className="mt-[1px]">In 30 Min</span>
-                </Button>
-
-                {/* 60 MIN BTN */}
-                <Button
-                    variant="outline"
-                    className="
-                            w-[138.333333333px]
-                            flex
-                            flex-row 
-                            items-center 
-                            justify-between 
-                            cursor-pointer 
-                            !px-5 
-                            py-5 
-                            bg-white
-                            hover:bg-[#8fffc7]  
-                            hover:border-[#8fffc7]
-                            border-[1px] 
-                            border-white
-                            text-gray-700 
-                            rounded-full 
-                            font-semibold 
-                            !text-sm 
-                           ">
-
-                    {/* ICON */}
-                    <span
-                        style={{
-                            backgroundImage: `url(${tf60min_black})`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'contain',
-                            display: 'inline-block',
-                            width: '24px',
-                            height: '24px',
-                        }}
-                    ></span>
-
-                    {/* BTN TEXT */}
-                    <span className="mt-[1px]">In 60 Min</span>
-                </Button>
+                        {/* BTN TEXT */}
+                        <span className="mt-[1px]">{btn.name}</span>
+                    </Button>
+                ))}
             </div>
         </div>
-    )
+    );
 }
