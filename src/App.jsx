@@ -1,5 +1,6 @@
-// PAGES
 import { useEffect, useState } from 'react';
+
+// PAGES
 import { HomePage, LoadingPage } from './pages'
 
 export default function App() {
