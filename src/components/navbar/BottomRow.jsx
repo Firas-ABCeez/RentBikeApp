@@ -1,51 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // UI COMPONENTS
 import { Button } from "@/components/ui/button";
 
 // ICONS
-import realTimeWhite from '@/assets/icons/realTime_white.svg';
-import realTimeColor from '@/assets/icons/realTime_color.svg';
-import tf30minBlack from '@/assets/icons/tf30min_black.svg';
-import tf30minColor from '@/assets/icons/tf30min_color.svg';
-import tf60minBlack from '@/assets/icons/tf60min_black.svg';
-import tf60minColor from '@/assets/icons/tf60min_color.svg';
+import normalBike_color from '@/assets/icons/normalBike_color.svg';
+import normalBike_white from '@/assets/icons/normalBike_white.svg';
+import electricBike_white from '@/assets/icons/electricBike_white.svg';
+import electricBike_color from '@/assets/icons/electricBike_color.svg';
+import parking_white from '@/assets/icons/parking_white.svg';
+import parking_color from '@/assets/icons/parking_color.svg';
 
 export default function BottomRow() {
 
-    // Collection of timeline btns
-    const timelinesBtns = [
-      {
-            name: 'Real Time',
-            inActiveIcon: realTimeColor,
-            activeIcon: realTimeWhite,
-            btnBgColor: 'bg-[#F53B57]',
-            btnBgHoverColor: 'hover:bg-[#ff5e57]',
+    // Collection of menu items of Bikes to select from
+    const bikesBtns = [
+        {
+            name: 'Classic',
+            inActiveIcon: normalBike_color,
+            activeIcon: normalBike_white,
+            btnBgColor: 'bg-[#8c7ae6]',
+            btnBgHoverColor: 'hover:bg-[#9c88ff]',
             textColor: 'text-white',
-            borderColor: '#F53B57',
+            borderColor: '#8c7ae6',
         },
         {
-            name: 'In 30 Min',
-            inActiveIcon: tf30minBlack,
-            activeIcon: tf30minColor,
-            btnBgColor: 'bg-[#FFA801]',
-            btnBgHoverColor: 'hover:bg-[#ffc048]',
+            name: 'E-Bike',
+            inActiveIcon: electricBike_color,
+            activeIcon: electricBike_white,
+            btnBgColor: 'bg-[#8c7ae6]',
+            btnBgHoverColor: 'hover:bg-[#9c88ff]',
             textColor: 'text-white',
-            borderColor: '#FFA801',
+            borderColor: '#8c7ae6',
         },
         {
-            name: 'In 60 Min',
-            inActiveIcon: tf60minBlack,
-            activeIcon: tf60minColor,
-            btnBgColor: 'bg-[#05c46b]',
-            btnBgHoverColor: 'hover:bg-[#0be881]',
+            name: 'Station',
+            inActiveIcon: parking_color,
+            activeIcon: parking_white,
+            btnBgColor: 'bg-[#8c7ae6]',
+            btnBgHoverColor: 'hover:bg-[#9c88ff]',
             textColor: 'text-white',
-            borderColor: '#05c46b',
+            borderColor: '#8c7ae6',
         },
     ];
 
-    // Dynamically store and update the active btn based on 'activeBtn' state
-    const [activeBtn, setActiveBtn] = useState(0);
+    // Collected all the selected items 
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    // Check if the item is already selected and been added to the selectedItems list then Remove it, otherwise, add it.
+    function selectThisItem(selectedItem) {
+    const isSelected = selectedItems.includes(selectedItem);
+
+    if (isSelected) {
+        setSelectedItems(prev =>
+            prev.filter(item => item !== selectedItem)
+        );
+    } else {
+        setSelectedItems(prev => [...prev, selectedItem]);
+    }
+}
 
     return (
         <div className="flex flex-row justify-between px-5">
@@ -63,12 +76,12 @@ export default function BottomRow() {
                 text-sm
                 rounded-full
                 m-0
-                shadow-sm
-            ">
-                {timelinesBtns.map((btn, i) => (
+                shadow-sm">
+
+                {bikesBtns.map((btn, i) => (
                     <Button
                         key={i}
-                        onClick={() => setActiveBtn(i)}
+                        onClick={() => selectThisItem(i)}
                         variant="outline"
                         className={`
                             shadow-none
@@ -81,22 +94,22 @@ export default function BottomRow() {
                             border-[1px]
                             border-white
                             // BG COLOR 
-                            ${activeBtn === i ? btn.btnBgColor : 'white'}
-                            ${activeBtn === i ? btn.btnBgHoverColor : 'hover:bg-gray-200'}
+                            ${selectedItems.includes(i) ? btn.btnBgColor : 'white'}
+                            ${selectedItems.includes(i) ? btn.btnBgHoverColor : 'hover:bg-gray-100'}
                             // TEXT
-                            ${activeBtn === i ? btn.textColor : 'text-gray-700'}
-                            ${activeBtn === i ? `hover:text-white` : 'hover:text-gray-700'}
-                            ${activeBtn === i ? 'font-extrabold' : 'font-semibold'}
+                            ${selectedItems.includes(i) ? btn.textColor : 'text-gray-700'}
+                            ${selectedItems.includes(i) ? `hover:text-white` : 'hover:text-black'}
+                            ${selectedItems.includes(i) ? 'font-extrabold' : 'font-semibold'}
                             // SHADOW
-                            ${activeBtn === i ? 'shadow-lg' : 'shadow-none'}
+                            ${selectedItems.includes(i) ? 'shadow-lg' : 'shadow-none'}
                             
                             
-                        `}
-                    >
+                        `}>
+
                         {/* ICON */}
                         <span
                             style={{
-                                backgroundImage: `url(${activeBtn === i ? btn.activeIcon : btn.inActiveIcon})`,
+                                backgroundImage: `url(${selectedItems.includes(i) ? btn.activeIcon : btn.inActiveIcon})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: 'contain',
                                 display: 'inline-block',
