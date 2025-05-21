@@ -246,6 +246,7 @@ export default function UpperRow() {
                                     display: 'inline-block',
                                     width: '300px',
                                     height: '200px',
+                                    margin: '45px 0 -45px 0'
                                 }}></span>
                             </DialogTitle>
                             <DialogDescription className="-mt-[45px]">
