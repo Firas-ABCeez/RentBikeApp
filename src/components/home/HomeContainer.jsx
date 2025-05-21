@@ -1,6 +1,6 @@
 // UI COMPONENTS
 import NavbarContainer from "../navbar/NavbarContainer";
-import Map from './Map';
+import Map from '../map/Map';
 
 export default function HomeContainer() {
   
