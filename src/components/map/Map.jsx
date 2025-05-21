@@ -13,6 +13,9 @@ import activeMarker from '@/assets/icons/activeMarker.png';
 // import parking_white from '@/assets/icons/parking_white.svg';
 // import parking_color from '@/assets/icons/parking_color.svg';
 
+// API
+import { stations } from '@/api/database.js';
+
 export default function Map() {
     const mapRef = useRef(null);
     // Ref for the drawer container to detect outside clicks
@@ -20,22 +23,7 @@ export default function Map() {
     const mapContainerRef = useRef(null);
     const [mapLoaded, setMapLoaded] = useState(false); // New state to track map load
     const [openDrawer, setOpenDrawer] = useState(false);
-    const [selectedPoint, setSelectedPoint] = useState(null);
-
-
-    // Points on map
-    const points = [
-        { lng: 10.1850, lat: 36.8080, info: 'hasEV', hasEV: true },
-        { lng: 10.1815, lat: 36.8120, info: 'Hi', hasEV: false },
-        { lng: 10.1780, lat: 36.8050, info: 'Hi', hasEV: false },
-        { lng: 10.1815, lat: 36.8020, info: 'Hi', hasEV: false },
-        { lng: 10.1900, lat: 36.8065, info: 'hasEV', hasEV: true },
-        { lng: 10.1750, lat: 36.8065, info: 'hasEV', hasEV: true },
-        { lng: 10.1950, lat: 36.8150, info: 'Hsi', hasEV: true },
-        { lng: 10.1600, lat: 36.7950, info: 'Hi', hasEV: false },
-        { lng: 10.2000, lat: 36.8200, info: 'Hi', hasEV: false },
-        { lng: 10.1900, lat: 36.7980, info: 'hasEV', hasEV: true }
-    ];
+    const [selectedStation, setSelectedStation] = useState(null);
 
     useEffect(() => {
         const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
@@ -69,8 +57,8 @@ export default function Map() {
         };
     }, []);
 
-    const handleMarkerClick = (point) => {
-        setSelectedPoint(point);
+    const handleMarkerClick = (station) => {
+        setSelectedStation(station);
         setOpenDrawer(true);
     };
 
@@ -85,7 +73,6 @@ export default function Map() {
                 // Remove 'active' class from all icons
                 const allIcons = document.querySelectorAll('.icon.active');
                 allIcons.forEach(icon => icon.classList.remove('active'));
-                
             }
         };
 
@@ -100,24 +87,24 @@ export default function Map() {
 
     return (
         <div id="map-container" ref={mapContainerRef} className="h-full w-full overflow-hidden">
-            {mapLoaded && mapRef.current && points.map((point, i) => (
+            {mapLoaded && mapRef.current && stations.map((station, i) => (
                 <Marker
                     key={i}
                     map={mapRef.current}
-                    lng={point.lng}
-                    lat={point.lat}
-                    count={15}
+                    lng={station.lng}
+                    lat={station.lat}
+                    count={station.data.classicBikes + station.data.eBikes}
                     iconPath={inActiveMarker}
                     iconPathActive={activeMarker}
-                    hasEV={point.hasEV}
-                    onClick={() => handleMarkerClick(point)}
+                    hasEV={station.hasEV}
+                    onClick={() => handleMarkerClick(station)}
                 />
             ))}
 
             <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
                 <DrawerContent>
                     <div ref={drawerRef}>
-                        <CustomDrawer data={selectedPoint}/>
+                        <CustomDrawer data={selectedStation} />
                     </div>
                 </DrawerContent>
             </Drawer>
