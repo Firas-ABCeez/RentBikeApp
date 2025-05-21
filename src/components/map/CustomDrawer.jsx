@@ -14,7 +14,6 @@ import {
 import { formatDistanceToNow } from "date-fns"
 
 import {
-    DrawerClose,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
@@ -23,6 +22,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+
+import { Toaster, toast } from 'sonner'
+
 
 
 export default function CustomDrawer({ data }) {
@@ -37,6 +39,8 @@ export default function CustomDrawer({ data }) {
 
     return (
         <>
+            <Toaster position="top-center" richColors />
+
             <div className="w-full h-full p-4">
                 <div className="grid grid-cols-12 gap-4 h-full">
                     {/* Left column - Station info */}
@@ -176,13 +180,18 @@ export default function CustomDrawer({ data }) {
                         </div>
 
                         <DrawerFooter className="p-0 mt-auto">
-                            <Button size="sm" className="w-full mt-2 font-bold cursor-pointer">
+                            <Button
+                                size="sm"
+                                className="w-full mt-2 font-bold cursor-pointer"
+                                onClick={() => toast.error("Whoops — You need to login to send this station details to your app.")}>
                                 Continue through App
                             </Button>
                         </DrawerFooter>
                     </div>
                 </div>
             </div>
+
+
         </>
 
     )
