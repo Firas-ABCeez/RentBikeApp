@@ -65,7 +65,7 @@ export default function Map() {
     // Effect to handle clicks outside the menu
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+            if (drawerRef.current && !drawerRef.current.contains(event.target) || event.key === 'Escape') {
                 // Remove 'active' class from all bubbles
                 const allBubbles = document.querySelectorAll('.bubble.active');
                 allBubbles.forEach(bubble => bubble.classList.remove('active'));
@@ -78,10 +78,13 @@ export default function Map() {
 
         // Add event listener when the component mounts
         document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleClickOutside);
+
 
         // Clean up the event listener when the component unmounts
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleClickOutside);
         };
     }, [drawerRef]);
 
@@ -101,8 +104,14 @@ export default function Map() {
                 />
             ))}
 
-            <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
-                <DrawerContent>
+            <Drawer
+                open={openDrawer}
+                onOpenChange={setOpenDrawer}
+                >
+                <DrawerContent 
+                // Disable Swipe-to-Close:
+                data-vaul-no-drag
+                className="max-w-[950px] max-h-[350px] mx-auto">
                     <div ref={drawerRef}>
                         <CustomDrawer data={selectedStation} />
                     </div>
