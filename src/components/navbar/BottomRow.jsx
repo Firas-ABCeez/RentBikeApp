@@ -88,6 +88,7 @@ export default function BottomRow() {
                             cursor-pointer 
                             px-5 
                             py-5
+                            space-x-2
                             w-[138.333333333px]
                             text-sm
                             rounded-full
