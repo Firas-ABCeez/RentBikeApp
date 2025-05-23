@@ -16,38 +16,38 @@ import {
 // ICONS
 import { IoLogInOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
-import normalBike_white from '@/assets/icons/normalBike_white.svg';
-import electricBike_white from '@/assets/icons/electricBike_white.svg';
-import parking_white from '@/assets/icons/parking_white.svg';
-import electricBike_color from '@/assets/icons/electricBike_color.svg';
-import normalBike_color from '@/assets/icons/normalBike_color.svg';
-import parking_color from '@/assets/icons/parking_color.svg';
 import logo from '@/assets/icons/logo.png';
 import { BiLogInCircle } from "react-icons/bi";
 import googleIcon from '@/assets/icons/googleIcon.svg';
 
-
 export default function UpperRow() {
 
-    // Collection of menu items of Bikes to select from
+    // Collection of menu items of timelines to select from
+
     const menuItems = [
         {
-            title: 'Normal Bicycle',
-            description: 'Enjoy a healthy, eco-friendly ride on a classic bicycle. Perfect for short commutes, leisurely rides, and those who love to pedal their way through the city.',
-            iconInColor: normalBike_color,
-            iconInWhite: normalBike_white,
+            title: 'Need it now',
+            description: 'Find electric bikes, classic bikes, or stations that are currently available near you and ready to use immediately.',
+            btnBgColor: 'bg-[#F53B57]',
+            btnBgHoverColor: 'hover:bg-[#ff5e57]',
+            textColor: 'text-white',
+            borderColor: '#F53B57',
         },
         {
-            title: 'Electric (EV) Bike',
-            description: 'Go farther with ease—experience the power of electric cycling. Ideal for longer distances, uphill routes, and anyone wanting a smooth, sweat-free journey.',
-            iconInColor: electricBike_color,
-            iconInWhite: electricBike_white
+            title: 'Plan for 30 min',
+            description: 'See which bikes or stations are expected to be available in the next 30 minutes, so you can plan ahead with confidence.',
+            btnBgColor: 'bg-[#FFA801]',
+            btnBgHoverColor: 'hover:bg-[#ffc048]',
+            textColor: 'text-white',
+            borderColor: '#FFA801',
         },
         {
-            title: 'General Parking',
-            description: 'Secure your spot! Enjoy hassle-free parking for your ride, anytime. Find convenient and safe spaces to leave your bicycle or EV bicycle—no more circling or worrying.',
-            iconInColor: parking_color,
-            iconInWhite: parking_white,
+            title: 'Plan for 1 hour',
+            description: "Check future availability for the next hour to schedule your ride in advance, whether you're heading out soon or planning a later trip.",
+            btnBgColor: 'bg-[#05c46b]',
+            btnBgHoverColor: 'hover:bg-[#0be881]',
+            textColor: 'text-white',
+            borderColor: '#05c46b',
         }
     ];
 
@@ -124,7 +124,7 @@ export default function UpperRow() {
                 <div ref={menuRef}>
                     <Button
                         variant="outline"
-                        className="
+                        className={`
                                 flex
                                 flex-row
                                 items-center
@@ -133,10 +133,10 @@ export default function UpperRow() {
                                 !px-5
                                 py-5
                                 !min-w-[190px]
-                                bg-[#019b94]
-                                hover:bg-[#0fb9b1]
+                                ${selectedMenuItem.btnBgColor}
+                                ${selectedMenuItem.btnBgHoverColor}
                                 border-[1px]
-                                border-[#0fb9b1]
+                                ${selectedMenuItem.borderColor}
                                 hover:text-white
                                 text-white
                                 rounded-full
@@ -144,21 +144,9 @@ export default function UpperRow() {
                                 !text-sm
                                 float-end
                                 shadow-md
-                                hover:shadow-lg"
+                                hover:shadow-lg`}
                         onClick={toggleMenu}
                     >
-
-                        {/* ICON */}
-                        <span
-                            style={{
-                                backgroundImage: `url(${selectedMenuItem.iconInWhite})`,
-                                backgroundRepeat: 'no-repeat',
-                                backgroundSize: 'contain',
-                                display: 'inline-block',
-                                width: '25px',
-                                height: '25px',
-                            }}
-                        ></span>
 
                         {/* BTN TEXT */}
                         <span className="mt-[1px]">{selectedMenuItem.title}</span>
@@ -192,16 +180,6 @@ export default function UpperRow() {
                                     rounded-md"
                                     onClick={() => handleMenuItemClick(item)}
                                 >
-
-                                    {/* ELEMENT ICON */}
-                                    <span style={{
-                                        backgroundImage: `url(${item.iconInColor})`,
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundSize: 'contain',
-                                        display: 'inline-block',
-                                        minWidth: '60px',
-                                        minHeight: '60px',
-                                    }}></span>
 
                                     <div className="flex flex-col">
                                         {/* ELEMENT TITLE */}
@@ -268,6 +246,7 @@ export default function UpperRow() {
                                     display: 'inline-block',
                                     width: '300px',
                                     height: '200px',
+                                    margin: '45px 0 -45px 0'
                                 }}></span>
                             </DialogTitle>
                             <DialogDescription className="-mt-[45px]">
@@ -319,7 +298,7 @@ export default function UpperRow() {
                                         {/* LOGIN BTN */}
                                         <div>
                                             <Button
-                                            type="submit"
+                                                type="submit"
                                                 placeholder="Enter your email address..."
                                                 className="
                                                 bg-[#2E86DE]
@@ -427,7 +406,7 @@ export default function UpperRow() {
                                                     display: 'inline-block',
                                                     padding: '20px',
                                                 }}
-                                                className="mr-[-5px] ml-[-13px]"
+                                                    className="mr-[-5px] ml-[-13px]"
                                                 ></span>
                                                 <span className="font-bold">
                                                     Continue with Google
