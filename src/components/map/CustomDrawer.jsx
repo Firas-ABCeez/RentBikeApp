@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
-import { Toaster, toast } from 'sonner'
+import { toast } from 'sonner'
 
 
 
@@ -39,8 +39,6 @@ export default function CustomDrawer({ data }) {
 
     return (
         <>
-            <Toaster position="top-center" richColors />
-
             <div className="w-full h-full p-4">
                 <div className="grid grid-cols-12 gap-4 h-full">
                     {/* Left column - Station info */}

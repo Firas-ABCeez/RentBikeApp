@@ -7,13 +7,18 @@ import './markerStyles.css'
 // ICONS
 import hasEVicon from '@/assets/icons/hasEV.png'
 
-export default function Marker({ map, lng, lat, count, hasEV, onClick, refresh }) {
+export default function Marker({ map, lng, lat, count, hasEV, onClick, filter }) {
   useEffect(() => {
     if (!map) return;
 
     // Create the marker DOM element
     const el = document.createElement('div');
-    el.className = 'bike-marker';
+    el.className =
+      filter === 0 ? (count === 0 ? 'notAvailable' : 'classic-bike') :
+        filter === 1 ? (count === 0 ? 'notAvailable' : 'e-bike') :
+          filter === 2 ? (count === 0 ? 'notAvailable' : 'parking') :
+            'noFilter';
+
     el.innerHTML = `
     <div>
     ${hasEV === true ? `<span class="hasEV"><img src="${hasEVicon}" class="hasEVicon" alt="EV"/></span>` : ''}
@@ -39,7 +44,7 @@ export default function Marker({ map, lng, lat, count, hasEV, onClick, refresh }
       .addTo(map);
 
     return () => marker.remove();
-  }, [map, lng, lat, count, refresh]);
+  }, [map, lng, lat, count, filter]);
 
   return null;
 }

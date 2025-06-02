@@ -1,19 +1,29 @@
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Geofence from './Geofence';
+import * as turf from '@turf/turf';
 
 // UI COMPONENTS
 import Marker from './Marker';
 import CustomDrawer from './CustomDrawer';
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { toast } from 'sonner'
 
 // ICONS
 import inActiveMarker from '@/assets/icons/inActiveMarker.png';
 import activeMarker from '@/assets/icons/activeMarker.png';
 import clusterIcon from '@/assets/icons/clusterIcon.png';
+import eBikeMoving from '@/assets/icons/eBikeMoving.png';
+import bikeMoving from '@/assets/icons/bikeMoving.png';
 
 // API
 import { stations } from '@/api/database.js';
+import bikesMoves from '@/api/bikesMoves.js';
+import geofencesStore from '@/api/geofencesStore.js';
+
+// STORES
+import useFilter from '@/stores/filter/useFilter.js';
 
 
 export default function Map() {
@@ -40,7 +50,7 @@ export default function Map() {
             container: mapContainerRef.current,
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [10.1815, 36.8065],
-            zoom: 5,
+            zoom: 13,
         });
 
         mapRef.current = map;
@@ -49,7 +59,7 @@ export default function Map() {
             setMapLoaded(true);
 
             // --- Load Custom Cluster Images ---
-            const clusterImageUrl = clusterIcon; 
+            const clusterImageUrl = clusterIcon;
 
             map.loadImage(
                 clusterImageUrl,
@@ -122,7 +132,7 @@ export default function Map() {
                     'text-allow-overlap': true, // Keep this for smooth text rendering
                 },
                 paint: {
-                    'text-color': '#fff' 
+                    'text-color': '#fff'
                 }
             });
 
@@ -233,33 +243,175 @@ export default function Map() {
         };
     }, []);
 
-    return (
-        <div id="map-container" ref={mapContainerRef} className="h-full w-full overflow-hidden">
-            {mapLoaded && mapRef.current && visibleMarkers.map((marker) => {
-                const station = stations.find(s => s.id === marker.id);
-                if (!station) return null;
-                return (
-                    <Marker
-                        key={station.id}
-                        map={mapRef.current}
-                        lng={marker.lng}
-                        lat={marker.lat}
-                        count={station.data.classicBikes + station.data.eBikes}
-                        iconPath={inActiveMarker}
-                        iconPathActive={activeMarker}
-                        hasEV={station.hasEV}
-                        onClick={() => handleMarkerClick(station)}
-                    />
-                );
-            })}
+    // Add Simulate bike movements when mount
+    const geofenceStates = {};
+    useEffect(() => {
+        if (!mapRef.current) return;
 
-            <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
-                <DrawerContent data-vaul-no-drag className="max-w-[950px] max-h-[350px] mx-auto">
-                    <div ref={drawerRef}>
-                        <CustomDrawer data={selectedStation} />
-                    </div>
-                </DrawerContent>
-            </Drawer>
-        </div>
+        const map = mapRef.current;
+
+        const loadMarkerAndAnimate = () => {
+            bikesMoves?.forEach((bike, i) => {
+                const markerId = `bike-marker-${i}`;
+                const bikeId = `bike-${i}`;
+                const sourceId = `${bikeId}-source`;
+                const layerId = `${bikeId}-layer`;
+
+                const imagePath = bike.isEV ? eBikeMoving : bikeMoving;
+
+                if (!map.hasImage(markerId)) {
+                    map.loadImage(imagePath, (error, image) => {
+                        if (error) {
+                            console.error(`Error loading image for bike ${i}:`, error);
+                            return;
+                        }
+
+                        if (!map.hasImage(markerId)) {
+                            map.addImage(markerId, image);
+                        }
+
+                        if (!map.getSource(sourceId)) {
+                            map.addSource(sourceId, {
+                                type: 'geojson',
+                                data: {
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: bike.moves[0],
+                                        }
+                                    }]
+                                }
+                            });
+                        }
+
+                        if (!map.getLayer(layerId)) {
+                            map.addLayer({
+                                id: layerId,
+                                type: 'symbol',
+                                source: sourceId,
+                                layout: {
+                                    'icon-image': markerId,
+                                    'icon-size': 0.2,
+                                    'icon-allow-overlap': true,
+                                }
+                            });
+                        }
+
+                        let index = 0;
+                        setInterval(() => {
+                            index = (index + 1) % bike.moves.length;
+                            const newCoord = bike.moves[index];
+
+                            const source = map.getSource(sourceId);
+                            if (source) {
+                                source.setData({
+                                    type: 'FeatureCollection',
+                                    features: [{
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: newCoord
+                                        }
+                                    }]
+                                });
+                            }
+
+                            // Geofence detection
+                            const point = turf.point(newCoord);
+                            const bikeKey = `Bike ID (${bike.id})`; // unique ID per bike
+
+                            geofencesStore.forEach((geofence, gfIndex) => {
+                                const circle = turf.circle(geofence.center, geofence.radius, {
+                                    steps: 64,
+                                    units: 'kilometers',
+                                });
+
+                                const inside = turf.booleanPointInPolygon(point, circle);
+                                const prevInside = geofenceStates[bikeKey]?.[gfIndex] || false;
+
+                                // Initialize storage
+                                if (!geofenceStates[bikeKey]) geofenceStates[bikeKey] = {};
+                                geofenceStates[bikeKey][gfIndex] = inside;
+
+                                if (inside && !prevInside) {
+                                    toast.success(`${bikeKey} entered geofence at ${geofence.location}`)
+                                } else if (!inside && prevInside) {
+                                    toast.warning(`${bikeKey} exited geofence at ${geofence.location}`)
+                                }
+                            });
+
+                        }, 1500);
+                    });
+                }
+            });
+        };
+
+        if (map.isStyleLoaded()) {
+            loadMarkerAndAnimate();
+        } else {
+            map.once('load', loadMarkerAndAnimate);
+        }
+
+
+    }, [mapLoaded]);
+
+    // Applying filters on Markers
+    const { filterBy } = useFilter();
+
+    useEffect(() => {
+        console.log('from Map.jsx', filterBy)
+    }, [filterBy]);
+
+    return (
+        <>
+            <div id="map-container" ref={mapContainerRef} className="h-full w-full overflow-hidden">
+
+                {/* Markers */}
+                {mapLoaded && mapRef.current && visibleMarkers.map((marker) => {
+                    const station = stations.find(s => s.id === marker.id);
+                    if (!station) return null;
+
+                    return (
+                        <Marker
+                            key={station.id}
+                            map={mapRef.current}
+                            filter={filterBy}
+                            lng={marker.lng}
+                            lat={marker.lat}
+                            count={
+                                filterBy === 0 ? (station.data.classicBikes < 1 ? 0 : station.data.classicBikes) :
+                                    filterBy === 1 ? (station.data.eBikes < 1 ? 0 : station.data.eBikes) :
+                                        filterBy === 2 ? (station.data.openDocks < 1 ? 0 : station.data.openDocks) :
+                                            station.data.classicBikes + station.data.eBikes
+                            }
+                            iconPath={inActiveMarker}
+                            iconPathActive={activeMarker}
+                            hasEV={
+                                filterBy === 0 && false ||
+                                filterBy === 1 && true ||
+                                filterBy === 2 && station.hasEV
+                            }
+                            onClick={() => handleMarkerClick(station)}
+                        />
+                    );
+                })}
+
+                {/* Markers Drawers */}
+                <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
+                    <DrawerContent data-vaul-no-drag className="max-w-[950px] max-h-[350px] mx-auto">
+                        <div ref={drawerRef}>
+                            <CustomDrawer data={selectedStation} />
+                        </div>
+                    </DrawerContent>
+                </Drawer>
+
+                {/* Add Geofence */}
+                {mapLoaded && mapRef.current &&
+                    (<Geofence map={mapRef.current} />)}
+
+            </div>
+        </>
     );
 }

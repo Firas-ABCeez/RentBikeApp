@@ -1,10 +1,12 @@
-.bike-marker .bubble {
+/* ---------------------------------------------- NO FILTER MARKERS ---------------------------------------------- */
+
+.noFilter .bubble {
   display: flex;
   align-items: center;
-  background-color: #4400ff;
+  background-color: #341f97;
   color: white;
   border-radius: 20px;
-  border: 2px solid #4400ff;
+  border: 2px solid #5f27cd;
   padding: 6px 10px;
   font-weight: bold;
   font-size: 14px;
@@ -12,19 +14,19 @@
   position: relative;
 }
 
-.bubble:hover {
-  background-color: #6128ff;
+.noFilter .bubble:hover {
+  background-color: #5f27cd;
   cursor: pointer;
 }
 
-.bike-marker .bubble.active {
+.noFilter .bubble.active {
   background-color: white;
-  border: 2px solid #4400ff;
-  color: #4400ff;
+  border: 2px solid #341f97;
+  color: #341f97;
   margin: 0;
 }
 
-.bike-marker .bubble::after {
+.noFilter .bubble::after {
   content: '';
   position: absolute;
   bottom: -6px;
@@ -32,10 +34,53 @@
   transform: translateX(-50%);
   border-width: 6px 6px 0 6px;
   border-style: solid;
-  border-color: #4400ff transparent transparent transparent;
+  border-color: #341f97 transparent transparent transparent;
 }
 
-.bike-marker .icon {
+.noFilter .count {
+  display: inline-block;
+}
+
+/* ---------------------------------------------- CLASSIC BIKES MARKERS ---------------------------------------------- */
+
+.classic-bike .bubble {
+  display: flex;
+  align-items: center;
+  background-color: #6c5ce7;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #6c5ce7;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.classic-bike .bubble:hover {
+  background-color: #a29bfe;
+  cursor: pointer;
+}
+
+.classic-bike .bubble.active {
+  background-color: white;
+  border: 2px solid #6c5ce7;
+  color: #6c5ce7;
+  margin: 0;
+}
+
+.classic-bike .bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #6c5ce7 transparent transparent transparent;
+}
+
+.classic-bike .icon {
   padding: 5px;
   background-size: contain;
   background-repeat: no-repeat;
@@ -47,7 +92,7 @@
   margin-right: 6px;
 }
 
-.bike-marker .icon.active {
+.classic-bike .icon.active {
   padding: 5px;
   background-size: contain;
   background-repeat: no-repeat;
@@ -59,9 +104,187 @@
   margin-right: 6px;}
 
 
-.bike-marker .count {
+.classic-bike .count {
   display: inline-block;
 }
+
+/* -------------------------------------------------- E-BIKES MARKERS --------------------------------------------------  */
+
+.e-bike .bubble {
+  display: flex;
+  align-items: center;
+  background-color: #22a6b3;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #22a6b3;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.e-bike .bubble:hover {
+  background-color: #7ed6df;
+  cursor: pointer;
+}
+
+.e-bike .bubble.active {
+  background-color: white;
+  border: 2px solid #22a6b3;
+  color: #22a6b3;
+  margin: 0;
+}
+
+.e-bike .bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #22a6b3 transparent transparent transparent;
+}
+
+.e-bike .icon {
+  padding: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@/assets/icons/inActiveMarker.png');
+  width: 22px;
+  height: 18px;
+  margin-top: -4px;
+  margin-right: 6px;
+}
+
+.e-bike .icon.active {
+  padding: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@/assets/icons/activeMarker.png');
+  width: 22px;
+  height: 18px;
+  margin-top: -4px;
+  margin-right: 6px;}
+
+
+.e-bike .count {
+  display: inline-block;
+}
+
+/* ---------------------------------------------- PARKING MARKERS ---------------------------------------------- */
+
+.parking .bubble {
+  display: flex;
+  align-items: center;
+  background-color: #d35400;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #d35400;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.parking .bubble:hover {
+  background-color: #e67e22;
+  cursor: pointer;
+}
+
+.parking .bubble.active {
+  background-color: white;
+  border: 2px solid #d35400;
+  color: #d35400;
+  margin: 0;
+}
+
+.parking .bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #d35400 transparent transparent transparent;
+}
+
+.parking .icon {
+  padding: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@/assets/icons/parking_white.svg');
+  width: 22px;
+  height: 18px;
+  margin-top: -4px;
+  margin-right: 6px;
+}
+
+.parking .icon.active {
+  padding: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@/assets/icons/parking_color.svg');
+  width: 22px;
+  height: 18px;
+  margin-top: -4px;
+  margin-right: 6px;}
+
+
+.parking .count {
+  display: inline-block;
+}
+
+/* ---------------------------------------------- NotAvailable MARKER ---------------------------------------------- */
+
+.notAvailable .bubble {
+  display: flex;
+  align-items: center;
+  background-color: #636e72;
+  color: white;
+  border-radius: 20px;
+  border: 2px solid #636e72;
+  padding: 6px 10px;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.notAvailable .bubble:hover {
+  background-color: #636e72;
+  cursor: pointer;
+}
+
+.notAvailable .bubble.active {
+  background-color: white;
+  border: 2px solid #636e72;
+  color: #636e72;
+  margin: 0;
+}
+
+.notAvailable .bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0 6px;
+  border-style: solid;
+  border-color: #636e72 transparent transparent transparent;
+}
+
+.notAvailable .count {
+  display: inline-block;
+}
+
 
 .hasEV {
   position: relative;

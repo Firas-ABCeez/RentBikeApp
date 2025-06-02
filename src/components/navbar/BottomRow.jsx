@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 // UI COMPONENTS
 import { Button } from "@/components/ui/button";
 
@@ -11,6 +9,9 @@ import electricBike_color from '@/assets/icons/electricBike_color.svg';
 import parking_white from '@/assets/icons/parking_white.svg';
 import parking_color from '@/assets/icons/parking_color.svg';
 
+// STORES
+import useFilter from '@/stores/filter/useFilter.js';
+
 export default function BottomRow() {
 
     // Collection of menu items of Bikes to select from
@@ -19,46 +20,32 @@ export default function BottomRow() {
             name: 'Classic',
             inActiveIcon: normalBike_color,
             activeIcon: normalBike_white,
-            btnBgColor: 'bg-[#8c7ae6]',
-            btnBgHoverColor: 'hover:bg-[#9c88ff]',
+            btnBgColor: 'bg-[#6c5ce7]',
+            btnBgHoverColor: 'hover:bg-[#a29bfe]',
             textColor: 'text-white',
-            borderColor: '#8c7ae6',
+            borderColor: '#6c5ce7',
         },
         {
             name: 'E-Bike',
             inActiveIcon: electricBike_color,
             activeIcon: electricBike_white,
-            btnBgColor: 'bg-[#8c7ae6]',
-            btnBgHoverColor: 'hover:bg-[#9c88ff]',
+            btnBgColor: 'bg-[#22a6b3]',
+            btnBgHoverColor: 'hover:bg-[#7ed6df]',
             textColor: 'text-white',
-            borderColor: '#8c7ae6',
+            borderColor: '#22a6b3',
         },
         {
-            name: 'Station',
+            name: 'Parking',
             inActiveIcon: parking_color,
             activeIcon: parking_white,
-            btnBgColor: 'bg-[#8c7ae6]',
-            btnBgHoverColor: 'hover:bg-[#9c88ff]',
+            btnBgColor: 'bg-[#d35400]',
+            btnBgHoverColor: 'hover:bg-[#e67e22]',
             textColor: 'text-white',
-            borderColor: '#8c7ae6',
+            borderColor: '#d35400',
         },
     ];
 
-    // Collected all the selected items 
-    const [selectedItems, setSelectedItems] = useState([]);
-
-    // Check if the item is already selected and been added to the selectedItems list then Remove it, otherwise, add it.
-    function selectThisItem(selectedItem) {
-    const isSelected = selectedItems.includes(selectedItem);
-
-    if (isSelected) {
-        setSelectedItems(prev =>
-            prev.filter(item => item !== selectedItem)
-        );
-    } else {
-        setSelectedItems(prev => [...prev, selectedItem]);
-    }
-}
+    const { filterBy, setFilterBy } = useFilter();
 
     return (
         <div className="flex flex-row justify-between px-5">
@@ -81,7 +68,13 @@ export default function BottomRow() {
                 {bikesBtns.map((btn, i) => (
                     <Button
                         key={i}
-                        onClick={() => selectThisItem(i)}
+                        onClick={() => {
+                            if (filterBy === i) {
+                                setFilterBy(null)
+                            } else {
+                                setFilterBy(i)
+                            }
+                        }}
                         variant="outline"
                         className={`
                             shadow-none
@@ -95,22 +88,20 @@ export default function BottomRow() {
                             border-[1px]
                             border-white
                             // BG COLOR 
-                            ${selectedItems.includes(i) ? btn.btnBgColor : 'white'}
-                            ${selectedItems.includes(i) ? btn.btnBgHoverColor : 'hover:bg-gray-100'}
+                            ${filterBy === i ? btn.btnBgColor : 'white'}
+                            ${filterBy === i ? btn.btnBgHoverColor : 'hover:bg-gray-100'}
                             // TEXT
-                            ${selectedItems.includes(i) ? btn.textColor : 'text-gray-700'}
-                            ${selectedItems.includes(i) ? `hover:text-white` : 'hover:text-black'}
-                            ${selectedItems.includes(i) ? 'font-extrabold' : 'font-semibold'}
+                            ${filterBy === i ? btn.textColor : 'text-gray-700'}
+                            ${filterBy === i ? `hover:text-white` : 'hover:text-black'}
+                            ${filterBy === i ? 'font-extrabold' : 'font-semibold'}
                             // SHADOW
-                            ${selectedItems.includes(i) ? 'shadow-lg' : 'shadow-none'}
-                            
-                            
+                            ${filterBy === i ? 'shadow-lg' : 'shadow-none'} 
                         `}>
 
                         {/* ICON */}
                         <span
                             style={{
-                                backgroundImage: `url(${selectedItems.includes(i) ? btn.activeIcon : btn.inActiveIcon})`,
+                                backgroundImage: `url(${filterBy === i ? btn.activeIcon : btn.inActiveIcon})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: 'contain',
                                 display: 'inline-block',

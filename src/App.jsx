@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
+import { Toaster } from 'sonner';
 
 // PAGES
-import { HomePage, LoadingPage } from './pages'
+import { HomePage, LoadingPage } from './pages';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,5 +15,10 @@ export default function App() {
     return () => clearTimeout(timer); // cleanup if component unmounts early
   }, []);
 
-  return isLoading ? <LoadingPage /> : <HomePage />;
+  return (
+    <>
+      {isLoading ? <LoadingPage /> : <HomePage />}
+      <Toaster position="top-center" richColors />
+    </>
+  );
 }

@@ -83,7 +83,7 @@ export const stations = [
   // { id: "77", lng: 10.6300, lat: 35.8080, hasEV: true, data: { stationName: "Sousse - Cité El Hadayek", classicBikes: 5, eBikes: 2, openDocks: 4, classicBikePrice: 0.800, eBikePrice: 1.300, status: "operational", lastUpdated: "2025-05-21T14:37:00Z", neighborhood: "Cité El Hadayek", services: ["mobile payment"] } },
   // { id: "78", lng: 10.6450, lat: 35.8150, hasEV: false, data: { stationName: "Sousse - Akouda Road", classicBikes: 9, eBikes: 0, openDocks: 1, classicBikePrice: 0.700, eBikePrice: null, status: "operational", lastUpdated: "2025-05-21T14:39:00Z", neighborhood: "Akouda", services: [] } }, // Adjusted lng slightly west
 
-  // // --- KAIROUAN STATIONS (approx. center: 10.0968, 35.6780) ---
+  // --- KAIROUAN STATIONS (approx. center: 10.0968, 35.6780) ---
   // { id: "79", lng: 10.0968, lat: 35.6780, hasEV: true, data: { stationName: "Kairouan - Central Station 1", classicBikes: 5, eBikes: 2, openDocks: 3, classicBikePrice: 0.700, eBikePrice: 1.200, status: "operational", lastUpdated: "2025-05-21T14:41:00Z", neighborhood: "Medina", services: ["mobile payment"] } },
   { id: "80", lng: 10.0990, lat: 35.6800, hasEV: false, data: { stationName: "Kairouan - Great Mosque", classicBikes: 7, eBikes: 0, openDocks: 2, classicBikePrice: 0.680, eBikePrice: null, status: "operational", lastUpdated: "2025-05-21T14:43:00Z", neighborhood: "Medina", services: ["helmet rental"] } },
   { id: "81", lng: 10.0950, lat: 35.6750, hasEV: true, data: { stationName: "Kairouan - Aghlabid Basins", classicBikes: 3, eBikes: 1, openDocks: 6, classicBikePrice: 0.750, eBikePrice: 1.300, status: "operational", lastUpdated: "2025-05-21T14:45:00Z", neighborhood: "Aghlabid", services: ["EV charging"] } },
