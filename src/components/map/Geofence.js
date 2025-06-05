@@ -9,18 +9,21 @@ const Geofence = ({ map }) => {
 
     // Build a FeatureCollection of all geofence circles
     const features = geofencesStore.map((geofence) => {
-      const circle = turf.circle(geofence.center, geofence.radius, {
-        steps: 64,
-        units: 'kilometers',
-      });
+      const geometry = geofence.geometry
+        ? geofence.geometry
+        : turf.circle(geofence.center, geofence.radius, {
+          steps: 64,
+          units: 'kilometers',
+        }).geometry;
 
-      // Attach properties for styling (optional if not using data-driven styles)
-      circle.properties = {
-        fillColor: geofence.fillColor,
-        fillOpacity: geofence.fillOpacity,
+      return {
+        type: 'Feature',
+        geometry,
+        properties: {
+          fillColor: geofence.fillColor,
+          fillOpacity: geofence.fillOpacity,
+        },
       };
-
-      return circle;
     });
 
     const featureCollection = {

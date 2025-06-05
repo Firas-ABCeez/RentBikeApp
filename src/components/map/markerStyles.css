@@ -148,26 +148,26 @@
 }
 
 .e-bike .icon {
-  padding: 5px;
-  background-size: contain;
+  padding: 6px;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url('@/assets/icons/inActiveMarker.png');
-  width: 22px;
-  height: 18px;
-  margin-top: -4px;
+  background-image: url('@/assets/icons/electricBike_white.svg');
+  width: 23px;
+  height: 23px;
+  margin-top: -3px;
   margin-right: 6px;
 }
 
 .e-bike .icon.active {
-  padding: 5px;
-  background-size: contain;
+  padding: 6px;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url('@/assets/icons/activeMarker.png');
-  width: 22px;
-  height: 18px;
-  margin-top: -4px;
+  background-image: url('@/assets/icons/electricBike_color.svg');
+  width: 23px;
+  height: 23px;
+  margin-top: -3px;
   margin-right: 6px;}
 
 

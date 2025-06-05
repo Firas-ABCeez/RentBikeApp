@@ -1,30 +1,66 @@
 const geofencesStore = [
-    // TUNIS
+    // BARDO MUSEUM, TUNIS
     {
         id: 1,
-        location: 'Tunis',
-        center: [10.1360, 36.81400],
-        radius: 0.8,
+        location: 'Bardo National Museum Area',
+        geometry: {
+            type: 'Polygon',
+            coordinates: [
+                [
+                    [10.136966788678661, 36.80733615760766],
+                    [10.136936520021255, 36.81235258517019],
+                    [10.13215407215123, 36.81223141929608],
+                    [10.132426490067878, 36.80881446268966],
+                    [10.134636102058458, 36.80704534013345],
+                    [10.136966788678661, 36.80733615760766],
+                ],
+            ],
+        },
         fillColor: 'red',
-        fillOpacity: 0.4,
+        fillOpacity: 0.3,
     },
-    // SFAX
+
+    // RN8 STREEN, TUNIS
     {
         id: 2,
-        location: 'Sfax',
-        center: [10.7000, 34.7750],
-        radius: 0.8,
-        fillColor: 'green',
-        fillOpacity: 0.4,
+        location: 'RN8 Street',
+        geometry: {
+            type: 'Polygon',
+            coordinates: [
+                [
+                    [10.190175, 36.815424],
+                    [10.190481, 36.815244],
+                    [10.198344, 36.822156],
+                    [10.197888, 36.822452],
+                    [10.190175, 36.815424],
+                ],
+            ],
+        },
+        fillColor: 'blue',
+        fillOpacity: 0.3,
     },
-    // KAIROUAN
+
+    // RN8 STREEN, TUNIS
     {
         id: 3,
-        location: 'Kairouan',
-        center: [10.12000, 35.6950],
-        radius: 0.8,
-        fillColor: 'black',
-        fillOpacity: 0.4,
+        location: 'Louis Braille Street',
+        geometry: {
+            type: 'Polygon',
+            coordinates: [
+                [
+                    [10.195373053067346, 36.825006223469586,],
+                    [10.19426403715599, 36.82615504688065,],
+                    [10.193122403129593, 36.827042762248226,],
+                    [10.191143570817168, 36.828269881238576,],
+                    [10.191589351722715, 36.82867021367275,],
+                    [10.193513820510072, 36.82732996207387],
+                    [10.195633997987667, 36.82548490198702],
+                    [10.195373053067346, 36.825006223469586],     
+                ],
+            ],
+        },
+        fillColor: 'green',
+        fillOpacity: 0.3,
     },
 ];
 

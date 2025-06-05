@@ -34,7 +34,8 @@ export default function Map() {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedStation, setSelectedStation] = useState(null);
     const [visibleMarkers, setVisibleMarkers] = useState([]);
-
+    const [zoomLevel, setZoomLevel] = useState(13);
+    
     useEffect(() => {
         const token = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
         if (!token) {
@@ -50,7 +51,7 @@ export default function Map() {
             container: mapContainerRef.current,
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [10.1815, 36.8065],
-            zoom: 13,
+            zoom: zoomLevel,
         });
 
         mapRef.current = map;
@@ -179,6 +180,7 @@ export default function Map() {
             map.on('mouseenter', 'clusters', () => {
                 map.getCanvas().style.cursor = 'pointer';
             });
+
             map.on('mouseleave', 'clusters', () => {
                 map.getCanvas().style.cursor = '';
             });
@@ -201,7 +203,6 @@ export default function Map() {
             // Update visible markers when the map finishes moving or zooming
             map.on('moveend', updateVisibleMarkers);
             map.on('zoomend', updateVisibleMarkers);
-
             // Perform initial update of visible markers once the map is idle
             map.once('idle', () => {
                 updateVisibleMarkers();
@@ -220,6 +221,12 @@ export default function Map() {
     const handleMarkerClick = (station) => {
         setSelectedStation(station);
         setOpenDrawer(true);
+
+        mapRef.current.flyTo({
+            center: [station.lng, station.lat],
+            zoom: zoomLevel, 
+            speed: 2.0,
+        });
     };
 
     // Effect for handling clicks outside the drawer or Escape key press
@@ -245,10 +252,35 @@ export default function Map() {
 
     // Add Simulate bike movements when mount
     const geofenceStates = {};
+
+    const animationIntervalsRef = useRef({});
+
     useEffect(() => {
         if (!mapRef.current) return;
-
         const map = mapRef.current;
+
+        // Clean up everything if zoom level is too low
+        if (zoomLevel < 11) {
+            bikesMoves?.forEach((_, i) => {
+                const layerId = `bike-${i}-layer`;
+                const sourceId = `bike-${i}-source`;
+                const markerId = `bike-marker-${i}`;
+                const intervalKey = `bike-${i}`;
+
+                // Remove layer, source, and marker image
+                if (map.getLayer(layerId)) map.removeLayer(layerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+                if (map.hasImage(markerId)) map.removeImage(markerId);
+
+                // Clear interval if exists
+                if (animationIntervalsRef.current[intervalKey]) {
+                    clearInterval(animationIntervalsRef.current[intervalKey]);
+                    delete animationIntervalsRef.current[intervalKey];
+                }
+            });
+
+            return;
+        }
 
         const loadMarkerAndAnimate = () => {
             bikesMoves?.forEach((bike, i) => {
@@ -256,7 +288,6 @@ export default function Map() {
                 const bikeId = `bike-${i}`;
                 const sourceId = `${bikeId}-source`;
                 const layerId = `${bikeId}-layer`;
-
                 const imagePath = bike.isEV ? eBikeMoving : bikeMoving;
 
                 if (!map.hasImage(markerId)) {
@@ -266,9 +297,7 @@ export default function Map() {
                             return;
                         }
 
-                        if (!map.hasImage(markerId)) {
-                            map.addImage(markerId, image);
-                        }
+                        if (!map.hasImage(markerId)) map.addImage(markerId, image);
 
                         if (!map.getSource(sourceId)) {
                             map.addSource(sourceId, {
@@ -277,10 +306,7 @@ export default function Map() {
                                     type: 'FeatureCollection',
                                     features: [{
                                         type: 'Feature',
-                                        geometry: {
-                                            type: 'Point',
-                                            coordinates: bike.moves[0],
-                                        }
+                                        geometry: { type: 'Point', coordinates: bike.moves[0] }
                                     }]
                                 }
                             });
@@ -295,12 +321,20 @@ export default function Map() {
                                     'icon-image': markerId,
                                     'icon-size': 0.2,
                                     'icon-allow-overlap': true,
+                                    'icon-offset': [0, -185],
                                 }
                             });
                         }
 
                         let index = 0;
-                        setInterval(() => {
+                        const intervalKey = `bike-${i}`;
+
+                        // Clear existing interval just in case
+                        if (animationIntervalsRef.current[intervalKey]) {
+                            clearInterval(animationIntervalsRef.current[intervalKey]);
+                        }
+
+                        const intervalId = window.setInterval(() => {
                             index = (index + 1) % bike.moves.length;
                             const newCoord = bike.moves[index];
 
@@ -318,31 +352,28 @@ export default function Map() {
                                 });
                             }
 
-                            // Geofence detection
                             const point = turf.point(newCoord);
-                            const bikeKey = `Bike ID (${bike.id})`; // unique ID per bike
+                            const bikeKey = `Bike ID (${bike.id})`;
 
                             geofencesStore.forEach((geofence, gfIndex) => {
-                                const circle = turf.circle(geofence.center, geofence.radius, {
-                                    steps: 64,
-                                    units: 'kilometers',
-                                });
+                                const polygon = turf.polygon(geofence.geometry.coordinates);
+                                const inside = turf.booleanPointInPolygon(point, polygon);
 
-                                const inside = turf.booleanPointInPolygon(point, circle);
-                                const prevInside = geofenceStates[bikeKey]?.[gfIndex] || false;
-
-                                // Initialize storage
                                 if (!geofenceStates[bikeKey]) geofenceStates[bikeKey] = {};
-                                geofenceStates[bikeKey][gfIndex] = inside;
 
-                                if (inside && !prevInside) {
-                                    toast.success(`${bikeKey} entered geofence at ${geofence.location}`)
-                                } else if (!inside && prevInside) {
-                                    toast.warning(`${bikeKey} exited geofence at ${geofence.location}`)
+                                const wasInside = geofenceStates[bikeKey][gfIndex] || false;
+
+                                if (inside && !wasInside) {
+                                    toast.success(`${bikeKey} entered geofence at ${geofence.location}`);
+                                } else if (!inside && wasInside) {
+                                    toast.warning(`${bikeKey} exited geofence at ${geofence.location}`);
                                 }
-                            });
 
-                        }, 1500);
+                                geofenceStates[bikeKey][gfIndex] = inside;
+                            });
+                        }, 300);
+
+                        animationIntervalsRef.current[intervalKey] = intervalId;
                     });
                 }
             });
@@ -353,16 +384,29 @@ export default function Map() {
         } else {
             map.once('load', loadMarkerAndAnimate);
         }
+    }, [mapLoaded, zoomLevel]);
 
 
-    }, [mapLoaded]);
+    // Track zoom level only after zoom ends
+    useEffect(() => {
+        if (!mapRef.current) return;
+        const map = mapRef.current;
+
+        const handleZoom = () => {
+            setZoomLevel(map.getZoom());
+        };
+
+        map.on('zoom', handleZoom);
+
+        return () => {
+            map.off('zoom', handleZoom);
+        };
+    }, []);
 
     // Applying filters on Markers
     const { filterBy } = useFilter();
 
-    useEffect(() => {
-        console.log('from Map.jsx', filterBy)
-    }, [filterBy]);
+
 
     return (
         <>
